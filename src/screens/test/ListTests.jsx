@@ -151,7 +151,6 @@ function ListTests() {
       patient_id: "",
       patient_name: "",
       doctor_name: "",
-      doctor_id: "",
       technician_name: "",
       technician_id: "",
     },
