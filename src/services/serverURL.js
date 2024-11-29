@@ -1,0 +1,1 @@
+export const SERVER_URL = "https://laboratary-dashboard-backend.onrender.com"
