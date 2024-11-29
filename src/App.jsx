@@ -16,7 +16,7 @@ import ListPatients from "./screens/patient/ListPatients";
 import ListTechnicians from "./screens/technician/ListTechnicians";
 import ListTests from "./screens/test/ListTests";
 import ListResults from "./screens/result/ListResults";
-import AddResult from "./screens/result/addResult";
+import addResult from "./screens/result/addResult";
 function App() {
   const { theme, toggleTheme } = useContext(ThemeContext);
 
@@ -42,7 +42,7 @@ function App() {
             <Route path="/list_technicians" element={<ListTechnicians />} />
             <Route path="/list_tests" element={<ListTests />} />
             <Route path="/list_results" element={<ListResults />} />
-            <Route path="/add_result" element={<AddResult />} />
+            <Route path="/add_result" element={<addResult />} />
             <Route path="*" element={<PageNotFound />} />
           </Route>
           <Route path="/" element={<Auth />} />

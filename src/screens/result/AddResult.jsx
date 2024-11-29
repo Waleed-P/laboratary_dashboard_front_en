@@ -10,7 +10,7 @@ import {
 import toast from "react-hot-toast";
 import Breadcrumb from "../../components/common/Breadcrumb";
 import Spinner from 'react-bootstrap/Spinner';
-function AddResult() {
+function addResult() {
   // Define the formik instance with validation schema
   const isEdit = localStorage.getItem("isEdit");
   const [initialData, setInitialData] = useState(null);
@@ -359,4 +359,4 @@ function AddResult() {
   );
 }
 
-export default AddResult;
+export default addResult;
