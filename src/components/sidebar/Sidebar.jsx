@@ -38,7 +38,7 @@ const Sidebar = () => {
     };
   }, []);
 
-  const [isActive, setIsActive] = useState(1);
+  const [isActive, setIsActive] = useState(2);
   const handleActiveState = (state) => {
     setIsActive(state);
   };
@@ -60,7 +60,7 @@ const Sidebar = () => {
       <div className="sidebar-body">
         <div className="sidebar-menu">
           <ul className="menu-list">
-            <li className="menu-item">
+            {/* <li className="menu-item">
               <Link
                 to="/dashboard"
                 onClick={() => {
@@ -74,7 +74,7 @@ const Sidebar = () => {
                 </span>
                 <span className="menu-link-text">Dashboard</span>
               </Link>
-            </li>
+            </li> */}
             <li className="menu-item">
               <Link
                 to="/list_doctors"

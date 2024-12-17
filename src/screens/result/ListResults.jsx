@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import {
   addResultAPI,
   deleteResultAPI,
+  generatePredictionAPI,
   listResultsAPI,
   updateResultAPI,
 } from "../../services/allAPI";
+import ReactMarkdown from "react-markdown";
 import ReactPaginate from "react-paginate";
 import { AreaTop } from "../../components";
 import TableContainer from "../../components/common/TableContainer";
@@ -14,13 +16,19 @@ import toast from "react-hot-toast";
 import WarningModal from "../../components/common/WarningModal";
 import { Link } from "react-router-dom";
 import Breadcrumb from "../../components/common/Breadcrumb";
+import Placeholder from "react-bootstrap/Placeholder";
 
 function ListResults() {
   const navigate = useNavigate();
   const [list, setList] = useState([]);
   const [id, setId] = useState("");
   const [totalPage, setTotalPage] = useState(1);
-  const [searchKey,setSearchKey]=useState("");
+  const [searchKey, setSearchKey] = useState("");
+  const [showPredictionModal, setShowPredictionModal] = useState(false);
+
+  // Functions to handle modal open/close
+  const closePredictionModal = () => setShowPredictionModal(false);
+  const openPredictionModal = () => setShowPredictionModal(true);
 
   useEffect(() => {
     fetchPatients();
@@ -28,12 +36,28 @@ function ListResults() {
 
   const fetchPatients = async () => {
     try {
-      const result = await listResultsAPI(1,10,searchKey);
+      const result = await listResultsAPI(1, 10, searchKey);
       console.log(result.data.data);
       setList(result.data.data);
       setTotalPage(result.data.total_pages);
     } catch (e) {
       console.log(e);
+    }
+  };
+  const [isLoading, setIsLoading] = useState(false);
+  const [predicion, setPredicion] = useState("");
+  const generatePrediction = async (result_id) => {
+    try {
+      setIsLoading(true);
+      const result = await generatePredictionAPI(result_id);
+      if (result.status == 200) {
+        setIsLoading(false);
+        setPredicion(result.data.data);
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -47,6 +71,7 @@ function ListResults() {
         { label: "Edit", action: "edit" },
         { label: "Delete", action: "delete" },
         { label: "View", action: "view" },
+        { label: "Generate Prediction", action: "predict" },
       ],
     },
   ];
@@ -114,13 +139,16 @@ function ListResults() {
         medications: row.medications,
         symptoms: row.symptoms,
       });
+    } else if (btn.action === "predict") {
+      openPredictionModal();
+      generatePrediction(row._id);
     }
   };
   // Pagination
   const fetchPage = async (currentPage) => {
     console.log(currentPage);
     try {
-      const result = await listResultsAPI(currentPage, 10,searchKey);
+      const result = await listResultsAPI(currentPage, 10, searchKey);
       const newList = result.data.data;
       return newList;
     } catch (error) {
@@ -174,7 +202,7 @@ function ListResults() {
         }}
         addButtonText={"Add Result"}
         searchPlaceHolder={"Search by patient name..."}
-        searchOnChange={(e)=>setSearchKey(e.target.value)}
+        searchOnChange={(e) => setSearchKey(e.target.value)}
       />
       <ReactPaginate
         previousLabel={"<"}
@@ -194,6 +222,23 @@ function ListResults() {
         breakLinkClassName={"page-link"}
         activeClassName={"active"}
       />
+      <Modal size="xl" show={showPredictionModal} onHide={closePredictionModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Patients future predictions and suggestions</Modal.Title>
+        </Modal.Header>
+        {isLoading ? (
+          <Modal.Body>
+            <Placeholder as="p" animation="glow">
+              <Placeholder xs={6} /> <Placeholder xs={8} />{" "}
+              <Placeholder xs={4} />
+            </Placeholder>
+          </Modal.Body>
+        ) : (
+          <Modal.Body>
+            <ReactMarkdown>{predicion}</ReactMarkdown>
+          </Modal.Body>
+        )}
+      </Modal>
       <WarningModal
         show={showWarningModal}
         handleClose={closeWarningModal}

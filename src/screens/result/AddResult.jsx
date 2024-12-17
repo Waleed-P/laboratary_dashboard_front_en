@@ -17,9 +17,10 @@ function addResult() {
   const [id, setId] = useState("");
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [searchKey,setSearchKey]=useState("")
   const fetchPatients = async () => {
     try {
-      const result = await listPatientsAPI(1, 100);
+      const result = await listPatientsAPI(1, 100,searchKey);
       setPatients(result.data.data);
     } catch (e) {
       console.log(e);

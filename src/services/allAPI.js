@@ -27,9 +27,17 @@ export const deleteDoctorAPI = async (id)=>{
 }
 //---------------------patients-------------------//
 //get patients
-export const listPatientsAPI = async (page_no,page_size,search_key)=>{
-    return await  commonAPI("GET",`${SERVER_URL}/get_patients?page_size=${page_size}&page_no=${page_no}&search=${search_key}`)
-}
+export const listPatientsAPI = async (page_no, page_size, search_key) => {
+    // Conditionally add the search key only if it exists
+    const searchParam = search_key ? `&search=${search_key}` : '';
+  
+    // Construct the URL
+    const url = `${SERVER_URL}/get_patients?page_size=${page_size}&page_no=${page_no}${searchParam}`;
+  
+    // Call the API
+    return await commonAPI("GET", url);
+  };
+  
 //add patient
 export const addPatientAPI = async (data)=>{
     return await  commonAPI("POST",`${SERVER_URL}/add_patient`,data)
@@ -94,4 +102,9 @@ export const updateResultAPI = async (result_id,data)=>{
 //delete result
 export const deleteResultAPI = async (result_id)=>{
     return await  commonAPI("DELETE",`${SERVER_URL}/remove_result/${result_id}`)
+}
+
+//Generate Prediction
+export const generatePredictionAPI = async (result_id)=>{
+    return await  commonAPI("POST",`${SERVER_URL}/generate_future_prediction/${result_id}`)
 }

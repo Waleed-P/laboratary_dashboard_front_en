@@ -54,7 +54,7 @@ function Auth({ insideRegister }) {
         resetForm();
         localStorage.setItem("token",result.data.token)
         setTimeout(() => {
-          insideRegister ? navigate('/') : navigate('/dashboard')
+          insideRegister ? navigate('/') : navigate('/list_doctors')
         }, 1000);
       } else {
         toast.error(result.response.data);
