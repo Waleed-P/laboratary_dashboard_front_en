@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Container,
   Row,
@@ -14,6 +14,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Formik, Field, Form as FormikForm, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import Spinner from "react-bootstrap/Spinner";
 import "../../assets/css/auth.css";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
@@ -22,6 +23,7 @@ import toast from "react-hot-toast";
 import { loginAPI, registerAPI } from "../../services/allAPI";
 function Auth({ insideRegister }) {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const initialValues = {
     email: "",
     password: "",
@@ -37,7 +39,8 @@ function Auth({ insideRegister }) {
       .required("Password is required"),
   });
 
-  const handleSubmit = async (values , { resetForm }) => {
+  const handleSubmit = async (values, { resetForm }) => {
+    setLoading(true);
     const formData = new FormData();
     formData.append("email", values.email);
     formData.append("password", values.password);
@@ -52,15 +55,18 @@ function Auth({ insideRegister }) {
           insideRegister ? "Registration Successful" : "Login Successful"
         );
         resetForm();
-        localStorage.setItem("token",result.data.token)
+        localStorage.setItem("token", result.data.token);
         setTimeout(() => {
-          insideRegister ? navigate('/') : navigate('/list_doctors')
+          insideRegister ? navigate("/") : navigate("/list_doctors");
+          setLoading(false);
         }, 1000);
       } else {
         toast.error(result.response.data);
       }
     } catch (e) {
       console.error(e);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -132,10 +138,11 @@ function Auth({ insideRegister }) {
                     className="w-100 mt-3 mb-3"
                     //   disabled={isSubmitting}
                   >
-                    {insideRegister
-                      ? "Sign Up"
-                      : // <>{isSubmitting ? "Signing in..." : "Sign In"}</>
-                        "Sign In"}
+                    {loading ? (
+                      <Spinner size="sm" />
+                    ) : (
+                      <>{insideRegister ? "Sign Up" : "Sign In"}</>
+                    )}
                   </Button>
                 </FormikForm>
               </Formik>
